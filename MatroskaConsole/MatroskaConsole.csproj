@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\Downloads\atldotnet-master\ATL\ATL.csproj" />
-    <ProjectReference Include="..\..\..\..\..\..\Downloads\matroska-master\MatroskaEbml.csproj" />
+    <ProjectReference Include="..\atldotnet-master\ATL\ATL.csproj" />
+    <ProjectReference Include="..\matroska-master\MatroskaEbml.csproj" />
     <ProjectReference Include="..\Src\Core.Tests\Core.Tests.csproj" />
     <ProjectReference Include="..\Src\Core\Core.csproj" />
   </ItemGroup>
