@@ -15,11 +15,13 @@ namespace ATL.test
         {
             if (null == locationRoot)
             {
-                locationRoot = Environment.CurrentDirectory;
+                locationRoot = Path.Combine(Environment.CurrentDirectory, "Resources");
 
-                locationRoot = locationRoot.Substring(0, locationRoot.IndexOf(REPO_NAME) + REPO_NAME.Length);
 
-                locationRoot += Path.DirectorySeparatorChar + "ATL.test" + Path.DirectorySeparatorChar + "Resources";
+
+                //locationRoot = locationRoot.Substring(0, locationRoot.IndexOf(REPO_NAME) + REPO_NAME.Length);
+
+                //locationRoot += Path.DirectorySeparatorChar + "ATL.test" + Path.DirectorySeparatorChar + "Resources";
             }
 
             if (includeFinalSeparator) return locationRoot + Path.DirectorySeparatorChar; else return locationRoot;
