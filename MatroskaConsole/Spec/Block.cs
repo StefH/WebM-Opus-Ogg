@@ -73,20 +73,22 @@ namespace Matroska.Spec
             {
                 int y = 0;
             }
-            
+
             using var bn = new BinaryReader(stream);
+
+            //VInt trackNumberAsVInt; // = Ebml.ReadVInt()
+
+            //Ebml.TryReadEbmlVInt(Span<byte> reader, int maxLength, out VInt vint)
 
             var buf = ArrayPool<byte>.Shared.Rent(8);
             var trackNumberAsVInt = NEbml.Core.VInt.Read(stream, 8, buf);
 
-            stream.Position += trackNumberAsVInt.Length;
-
-           
+            //stream.Position += trackNumberAsVInt.Length;
 
             var timeCode = bn.ReadInt16();
             var flags = bn.ReadByte();
-            
-            var lacing = (Lacing) (flags & (byte) Lacing.Any);
+
+            var lacing = (Lacing)(flags & (byte)Lacing.Any);
             var numFrames = 0;
             int laceCodedSizeOfEachFrame = 0;
             if (lacing != Lacing.No)
@@ -115,7 +117,7 @@ namespace Matroska.Spec
       }
              */
 
-            var pos = (int) stream.Position;
+            var pos = (int)stream.Position;
 
             return new Block
             {
@@ -125,7 +127,7 @@ namespace Matroska.Spec
                 IsKeyFrame = (flags & 0x80) > 0,
                 IsDiscardable = (flags & 0x01) > 0,
                 IsInvisible = (flags & 0x08) > 0,
-                Data = stream.ToArray().AsSpan().Slice(pos+1).ToArray()
+                Data = stream.ToArray().AsSpan().Slice(pos).ToArray()
             };
         }
     }

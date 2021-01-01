@@ -2,6 +2,7 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NEbml.Core;
 
 namespace Matroska.Spec
@@ -32,6 +33,11 @@ namespace Matroska.Spec
                     var s = Block.Parse(ms);
 
                     _.SimpleBlocks.Add(s);
+
+                    if (_.SimpleBlocks.Sum(c => c.Data.Length) >= 4210)
+                    {
+                        int cccc = 0;
+                    }
                     /*
                      * public ulong TrackNumber { get; set; }
 

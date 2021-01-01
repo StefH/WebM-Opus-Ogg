@@ -16,6 +16,12 @@ namespace Matroska.Spec
 
             while (reader.ReadNext())
             {
+                var el = MatroskaSpecification.ElementDescriptors.GetValueOrDefault(reader.ElementId);
+                if (el != default && el.Type != ElementType.Binary)
+                {
+                    Console.WriteLine(reader.GetName());
+                }
+
                 mapping.Invoke(instance, reader);
             }
 

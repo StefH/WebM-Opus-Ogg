@@ -21,7 +21,9 @@ namespace Matroska
 		{
 			vint = default;
 			if (!reader.TryRead(out byte b1))
+			{
 				return false;
+			}
 
 			ulong raw = b1;
 			uint mask = 0xFF00;
@@ -41,6 +43,64 @@ namespace Matroska
 							reader.Rewind(j + 1);
 							return false;
 						}
+
+						raw = (raw << 8) | b;
+						value = (value << 8) | b;
+					}
+
+					vint = new VInt(i + 1, raw, value);
+					return true;
+				}
+			}
+
+			throw new InvalidDataException("Invalid variable int.");
+		}
+
+		public static bool TryReadEbmlVInt(Span<byte> reader, int maxLength, out VInt vint)
+		{
+			vint = default;
+			if (reader.Length == 0)
+            {
+				return false;
+			}
+
+			int pos = 0;
+			byte b1 = reader[pos];
+			pos++;
+
+			//if (!reader.TryRead(out byte b1))
+			//	return false;
+
+			ulong raw = b1;
+			uint mask = 0xFF00;
+						
+			for (int i = 0; i < maxLength; ++i)
+			{
+				mask >>= 1;
+
+				if ((b1 & mask) != 0)
+				{
+					ulong value = raw & ~mask;
+
+					for (int j = 0; j < i; ++j)
+					{
+						byte b = 0;
+						if (reader.Length < pos)
+                        {
+							b = reader[pos];
+							pos++;
+						}
+                        else
+                        {
+							pos = pos - (j + 1);
+                        }
+
+
+						//if (!reader.TryRead(out byte b))
+						//{
+						//	reader.Rewind(j + 1);
+						//	return false;
+						//}
 
 						raw = (raw << 8) | b;
 						value = (value << 8) | b;

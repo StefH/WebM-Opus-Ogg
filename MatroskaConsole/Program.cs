@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Unicode;
 using System.Threading.Tasks;
 using ATL;
 using Commons;
@@ -256,107 +257,137 @@ namespace Matroska
     {
         static async Task Main(string[] args)
         {
-            var ms1 = new MemoryStream();
+            string downloads = @"C:\Users\StefHeyenrath\Downloads\";
 
-            var infoOgg = VorbisInfo.InitVariableBitRate(2, 48000, 0.5f);
-            // var comments = new Comments();
+            
 
+            //var infoOgg = VorbisInfo.InitVariableBitRate(2, 48000, 0.5f);
+            //var oggStream = new OggStream(0);
 
-            var oggStream = new OggStream(0);
+            //var infoPacket = HeaderPacketBuilder.BuildInfoPacket(infoOgg);
+            ////var commentsPacket = HeaderPacketBuilder.BuildCommentsPacket(comments);
 
-            // =========================================================
-            // HEADER
-            // =========================================================
-            // Vorbis streams begin with three headers; the initial header (with
-            // most of the codec setup parameters) which is mandated by the Ogg
-            // bitstream spec.  The second header holds any comment fields.  The
-            // third header holds the bitstream codebook.
+            //oggStream.PacketIn(infoPacket);
+            //// oggStream.PacketIn(commentsPacket);
 
-            var infoPacket = HeaderPacketBuilder.BuildInfoPacket(infoOgg);
-            //var commentsPacket = HeaderPacketBuilder.BuildCommentsPacket(comments);
+            //// Flush to force audio data onto its own page per the spec
+            //OggPage page;
+            //byte[] h;
+            ////while (oggStream.PageOut(out page, true))
+            //oggStream.PageOut(out page, true);
+            //{
+            //    h = page.Header;
+                
+            //    ms1.Write(h, 0, h.Length - 4);
 
-            oggStream.PacketIn(infoPacket);
-            // oggStream.PacketIn(commentsPacket);
-
-            // Flush to force audio data onto its own page per the spec
-            OggPage page;
-            byte[] h;
-            //while (oggStream.PageOut(out page, true))
-            oggStream.PageOut(out page, true);
-            {
-                h = page.Header;
-                //ms1.Write(page.Header, 0, page.Header.Length);
-                //ms1.Write(page.Body, 0, page.Body.Length);
-            }
+            //    //ms1.Write(page.Header, 0, page.Header.Length);
+            //    //ms1.Write(page.Body, 0, page.Body.Length);
+            //}
 
             //ms1.Write(h, 0, h.Length - 4);
             // ms1.Write(new byte[4], 0, 4);
 
-            var br = new BinaryWriter(ms1);
-            //br.Write(System.Text.Encoding.ASCII.GetBytes("OggS"));
-            //br.Write((long)48000); // original input sample rate in Hz
-            //br.Write((byte)2); // channel count
+            //if (1 == 6)
+            //{
+            //    var br = new BinaryWriter(ms1);
+            //    //br.Write(System.Text.Encoding.ASCII.GetBytes("OggS"));
+            //    //br.Write((long)48000); // original input sample rate in Hz
+            //    //br.Write((byte)2); // channel count
 
-            br.Write(System.Text.Encoding.ASCII.GetBytes("OpusHead"));
-            br.Write((byte)1); // version
-            br.Write((byte)2); // channel count
-            br.Write(new byte[2]); // pre-skip
-            br.Write((long)48000); // original input sample rate in Hz 
-            br.Write(new byte[2]); // output gain Q7.8 in dB
-            br.Write((byte)0); // mapping
-            br.Write((long)0); // ?
-            br.Write(System.Text.Encoding.ASCII.GetBytes("OpusTags"));
-            br.Write(0L); // ?
-            br.Write(0L); // ?
-            br.Write(h, 0, page.Header.Length); // OggS again ?
-            br.Flush();
+            //    br.Write(System.Text.Encoding.ASCII.GetBytes("OpusHead"));
+            //    br.Write((byte)1); // version
+            //    br.Write((byte)2); // channel count
+            //    br.Write(new byte[2]); // pre-skip
+            //    br.Write((long)48000); // original input sample rate in Hz 
+            //    br.Write(new byte[2]); // output gain Q7.8 in dB
+            //    br.Write((byte)0); // mapping
+            //    br.Write((long)0); // ?
+            //    br.Write(System.Text.Encoding.ASCII.GetBytes("OpusTags"));
+            //    br.Write(0L); // ?
+            //    br.Write(0L); // ?
+            //   // br.Write(h, 0, page.Header.Length); // OggS again ?
+            //    br.Flush();
+            //}
 
-            ms1 = new MemoryStream();
-            var org = File.OpenRead(@"C:\Users\Heyenrath SWW\Downloads\Estas Tonne - Internal Flight Experience (Live in Cluj Napoca)_track1_[eng]_DELAY 0ms.opus");
+            //     ms1 = new MemoryStream();
+            var org = File.OpenRead(downloads + "Estas Tonne - Internal Flight Experience (Live in Cluj Napoca)_track1_[eng]_DELAY 0ms.opus");
 
             var oggHeader1 = new OggHeader();
-            var source = new BufferedBinaryReader(org);
+            var source = new BinaryReader(org);
             oggHeader1.ReadFromStream(source);
 
+           // var memH = new MemoryStream();
+            
 
-            var ID = Utils.Latin1Encoding.GetString(source.ReadBytes(8));
-            //var isValidHeader = OPUS_HEADER_ID.Equals(info.OpusParameters.ID);
+            
 
-            var Version = source.ReadByte();
-            var OutputChannelCount = source.ReadByte();
-            var PreSkip = source.ReadUInt16();
-            //info.OpusParameters.InputSampleRate = source.ReadUInt32();
-            var InputSampleRate = 48000; // Actual sample rate is hardware-dependent. Let's assume for now that the hardware ATL runs on supports 48KHz
-            source.Seek(4, SeekOrigin.Current);
-            var OutputGain = source.ReadInt16();
 
-            var ChannelMappingFamily = source.ReadByte();
+
+            //var ID = Utils.Latin1Encoding.GetString(source.ReadBytes(8));
+            ////var isValidHeader = OPUS_HEADER_ID.Equals(info.OpusParameters.ID);
+
+            //var Version = source.ReadByte();
+            //var OutputChannelCount = source.ReadByte();
+            //var PreSkip = source.ReadUInt16();
+            ////info.OpusParameters.InputSampleRate = source.ReadUInt32();
+            //var InputSampleRate = 48000; // Actual sample rate is hardware-dependent. Let's assume for now that the hardware ATL runs on supports 48KHz
+            //source.Seek(4, SeekOrigin.Current);
+            //var OutputGain = source.ReadInt16();
+
+            //var ChannelMappingFamily = source.ReadByte();
 
             // ms1.Write(org, 0, 123);
 
             //var dataStream = new FileStream(@"C:\Users\azurestef\Downloads\test1.mkv", FileMode.Open, FileAccess.Read);
-            var dataStream = new FileStream(@"C:\Users\Heyenrath SWW\Downloads\Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).webm", FileMode.Open, FileAccess.Read);
 
+            var dataStream = new FileStream(downloads + "Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).webm", FileMode.Open, FileAccess.Read);
+           
             var reader = new NEbml.Core.EbmlReader(dataStream);
 
             reader.ReadNext();
 
             var segments = new List<Segment>();
 
-
-
             if (reader.LocateElement(MatroskaDtd.Segment))
             {
                 var segment = Segment.Read(reader);
 
+                var ms1 = new MemoryStream();
+                var oggHeader = new BinaryWriter(ms1);
+
+                // OggS
+                oggHeader1.WriteToStream(oggHeader);
+
+                // opus
+                ms1.Write(segment.Tracks.TrackEntry.CodecPrivate);
+
+                // OggS again?
+                oggHeader1.WriteToStream(oggHeader);
+
                 foreach (var cluster in segment.Clusters)
                 {
+                    if (ms1.Position > 4210)
+                    {
+                        continue;
+                    }
+
+                    // ms1.Write(System.Text.Encoding.ASCII.GetBytes("X"));
                     foreach (var b in cluster.SimpleBlocks)
                     {
+                        if (ms1.Position > 4210)
+                        {
+                            continue;
+                        }
+
                         ms1.Write(b.Data);
+
+                        
                     }
                 }
-                
+
+                File.WriteAllBytes(downloads + "Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).opus", ms1.ToArray());
+                return;
+
                 // Console.WriteLine(JsonSerializer.Serialize(segment, new JsonSerializerOptions { WriteIndented = true }));
 
                 //reader.EnterContainer();
@@ -368,7 +399,7 @@ namespace Matroska
                 //    Console.WriteLine(JsonSerializer.Serialize(i2, new JsonSerializerOptions { WriteIndented = true }));
                 //}
 
-               
+
 
                 uint oggPacket = 0;
                 while (reader.ReadNext())
@@ -396,10 +427,10 @@ namespace Matroska
 
                                 
 
-                                var memH = new MemoryStream();
-                                var oggHeader = new BinaryWriter(memH);
+                                //var memH = new MemoryStream();
+                                //var oggHeader = new BinaryWriter(memH);
 
-                                oggHeader1.WriteToStream(oggHeader);
+                                //oggHeader1.WriteToStream(oggHeader);
 
                                 //// 4F	67	67	53	00	2	00	00	00	00	00	00	00	00	8E	2B	E00	BA	00	00	00	00
 
@@ -416,8 +447,8 @@ namespace Matroska
                                 //oggHeader.Write(oggPacket); // crc
                                 //oggHeader.Flush();
 
-                                memH.Position = 0;
-                                memH.CopyTo(ms1);
+                                //memH.Position = 0;
+                                //memH.CopyTo(ms1);
 
                                 oggPacket++;
                             }
@@ -496,7 +527,7 @@ namespace Matroska
                 }
             }
 
-            File.WriteAllBytes(@"C:\Users\Heyenrath SWW\Downloads\Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).opus", ms1.ToArray());
+           // File.WriteAllBytes(downloads + "Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).opus", ms1.ToArray());
             return;
 
             // var e = EbmlElement.ReadElements(file).ToList();
