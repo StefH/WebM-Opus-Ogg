@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace NEbml.Core
 {
@@ -17,5 +18,19 @@ namespace NEbml.Core
 
 			return totalBytesRead;
 		}
+
+        //public static int ReadFully(this Stream stream, Span<byte> buffer, int offset, int count)
+        //{
+        //    int bytesRead = 0;
+        //    int totalBytesRead = 0;
+
+        //    do
+        //    {
+        //        bytesRead = stream.Read(buffer);
+        //        totalBytesRead += bytesRead;
+        //    } while (bytesRead > 0 && totalBytesRead < count);
+
+        //    return totalBytesRead;
+        //}
 	}
 }

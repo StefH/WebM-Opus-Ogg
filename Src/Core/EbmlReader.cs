@@ -315,6 +315,26 @@ namespace NEbml.Core
 			return r;
 		}
 
+        //public int ReadBinary(Span<byte> buffer, int offset, int length)
+        //{
+        //    if (_element.HasInvalidIdentifier || _element.Type != ElementType.None && _element.Type != ElementType.Binary)
+        //    {
+        //        throw new InvalidOperationException();
+        //    }
+        //    _element.Type = ElementType.Binary;
+        //    if (_element.Remaining == 0L)
+        //    {
+        //        return -1;
+        //    }
+        //    var r = _source.ReadFully(buffer, offset, (int)Math.Min(_element.Remaining, length));
+        //    if (r < 0)
+        //    {
+        //        throw new EndOfStreamException();
+        //    }
+        //    _element.Remaining -= r;
+        //    return r;
+        //}
+
 		#endregion
 
 		#region IDisposable Members

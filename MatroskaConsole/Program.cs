@@ -7,31 +7,28 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using ATL;
 using Commons;
-using CSCore;
-using CSCore.Codecs.OPUS;
-using CSCore.SoundOut;
-using Matroska;
+using Matroska.Spec;
 using NEbml.Core;
 using NEbml.MkvTitleEdit.Matroska;
 using OggVorbisEncoder;
 
-namespace MatroskaConsole
+namespace Matroska
 {
     public static class EbmlElementEx
     {
-        public static string GetName(this EbmlElement e)
-        {
-            string name = MatroskaSpecification.Elements.ContainsKey(e.ID) ? MatroskaSpecification.Elements[e.ID].Name : "?";
+        //public static string GetName(this EbmlElement e)
+        //{
+        //    string name = MatroskaSpecificationEbml.Elements.ContainsKey(e.ID) ? MatroskaSpecificationEbml.Elements[e.ID].Name : "?";
 
-            return $"0x{e.ID:X8} {name} {e.Length} bytes";
-        }
+        //    return $"0x{e.ID:X8} {name} {e.Length} bytes";
+        //}
 
         public static string GetName(this NEbml.Core.EbmlReader r, bool dumpValue = false)
         {
             string name = "?";
             string dump = "?";
 
-            var el = MatroskaSpecification2.ElementDescriptors.GetValueOrDefault(r.ElementId);
+            var el = MatroskaSpecification.ElementDescriptors.GetValueOrDefault(r.ElementId);
             if (el != null && el != default)
             {
                 name = el.Name;
@@ -65,7 +62,7 @@ namespace MatroskaConsole
                             dump = "'Master'";
                             break;
                         default:
-                            dump = string.Format("unknown (id:{0})", r.ToString());
+                            dump = $"unknown (id:{r.ToString()})";
                             break;
                     }
                 }
@@ -89,10 +86,7 @@ namespace MatroskaConsole
 
     }
 
-    class Segment
-    {
-        public int SeekHead { get; set; }
-    }
+    
 
     public static class DictionaryEx
     {
@@ -115,66 +109,6 @@ namespace MatroskaConsole
         }
     }
 
-    class Info
-    {
-        private readonly IDictionary<uint, Func<Info, EbmlElement, Task>> _mapping = new Dictionary<uint, Func<Info, EbmlElement, Task>>
-        {
-            { MatroskaSpecification.TimecodeScale.ID, async (thiz, e) => { thiz.TimecodeScale = await e.ReadUnsignedIntegerAsync(); } },
-            { MatroskaSpecification.Duration.ID, async (thiz, e) => { thiz.Duration = await e.ReadFloatAsync(); } },
-            { MatroskaSpecification.DateUTC.ID, async (thiz, e) => { thiz.DateUTC = await e.ReadDateAsync(); } },
-            { MatroskaSpecification.Title.ID, async (thiz, e) => { thiz.Title = await e.ReadUTF8Async(); } },
-            { MatroskaSpecification.MuxingApp.ID, async (thiz, e) => { thiz.MuxingApp = await e.ReadUTF8Async(); } },
-            { MatroskaSpecification.WritingApp.ID, async (thiz, e) => { thiz.WritingApp = await e.ReadUTF8Async(); } }
-        };
-
-        public ulong TimecodeScale { get; private set; }
-        public double Duration { get; private set; }
-        public DateTime DateUTC { get; private set; }
-        public string Title { get; private set; }
-        public string MuxingApp { get; private set; }
-        public string WritingApp { get; private set; }
-
-        public async Task ParseAsync(EbmlElement element)
-        {
-            foreach (var infoElement in EbmlElement.ReadElements(element))
-            {
-                await _mapping.InvokeAsync(this, infoElement);
-            }
-        }
-    }
-
-    class Info2
-    {
-        private readonly IDictionary<ElementDescriptor, Action<Info2, NEbml.Core.EbmlReader>> _mapping = new Dictionary<ElementDescriptor, Action<Info2, NEbml.Core.EbmlReader>>
-        {
-            { MatroskaDtd.Segment.Info.TimecodeScale, (thiz, r) => { thiz.TimecodeScale = r.ReadUInt(); } },
-            { MatroskaDtd.Segment.Info.Duration, (thiz, r) => { thiz.Duration = r.ReadFloat(); } },
-            { MatroskaDtd.Segment.Info.DateUTC, (thiz, r) => { thiz.DateUTC = r.ReadDate(); } },
-            { MatroskaDtd.Segment.Info.Title, (thiz, r) => { thiz.Title = r.ReadUtf(); } },
-            { MatroskaDtd.Segment.Info.MuxingApp, (thiz, r) => { thiz.MuxingApp = r.ReadUtf(); } },
-            { MatroskaDtd.Segment.Info.WritingApp, (thiz, r) => { thiz.WritingApp = r.ReadUtf(); } }
-        };
-
-        public ulong TimecodeScale { get; private set; }
-        public double Duration { get; private set; }
-        public DateTime DateUTC { get; private set; }
-        public string Title { get; private set; }
-        public string MuxingApp { get; private set; }
-        public string WritingApp { get; private set; }
-
-        public void Parse(NEbml.Core.EbmlReader reader)
-        {
-            reader.EnterContainer();
-
-            while (reader.ReadNext())
-            {
-                Console.WriteLine(reader.GetName());
-                _mapping.Invoke(this, reader);
-            }
-
-            reader.LeaveContainer();
-        }
-    }
 
     class MatroskaParser
     {
@@ -318,8 +252,6 @@ namespace MatroskaConsole
         }
     }
 
-    
-
     class Program
     {
         static async Task Main(string[] args)
@@ -380,7 +312,7 @@ namespace MatroskaConsole
             br.Flush();
 
             ms1 = new MemoryStream();
-            var org = File.OpenRead(@"C:\Users\azurestef\Downloads\Estas Tonne - Internal Flight Experience (Live in Cluj Napoca)_track1_[eng]_DELAY 0ms.opus");
+            var org = File.OpenRead(@"C:\Users\Heyenrath SWW\Downloads\Estas Tonne - Internal Flight Experience (Live in Cluj Napoca)_track1_[eng]_DELAY 0ms.opus");
 
             var oggHeader1 = new OggHeader();
             var source = new BufferedBinaryReader(org);
@@ -403,58 +335,40 @@ namespace MatroskaConsole
             // ms1.Write(org, 0, 123);
 
             //var dataStream = new FileStream(@"C:\Users\azurestef\Downloads\test1.mkv", FileMode.Open, FileAccess.Read);
-            var dataStream = new FileStream(@"C:\Users\azurestef\Downloads\Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).webm", FileMode.Open, FileAccess.Read);
+            var dataStream = new FileStream(@"C:\Users\Heyenrath SWW\Downloads\Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).webm", FileMode.Open, FileAccess.Read);
 
             var reader = new NEbml.Core.EbmlReader(dataStream);
 
             reader.ReadNext();
 
+            var segments = new List<Segment>();
+
+
+
             if (reader.LocateElement(MatroskaDtd.Segment))
             {
-                reader.EnterContainer();
+                var segment = Segment.Read(reader);
 
-                if (reader.LocateElement(MatroskaDtd.Segment.Info))
+                foreach (var cluster in segment.Clusters)
                 {
-                    var i2 = new Info2();
-                    i2.Parse(reader);
-                    Console.WriteLine(JsonSerializer.Serialize(i2, new JsonSerializerOptions { WriteIndented = true }));
-                }
-
-                if (reader.LocateElement(MatroskaDtd.Tracks))
-                {
-                    reader.EnterContainer();
-
-                    while (reader.ReadNext())
+                    foreach (var b in cluster.SimpleBlocks)
                     {
-                        Console.WriteLine(reader.GetName(true));
-
-                        if (reader.ElementId == MatroskaDtd.Tracks.TrackEntry.Identifier)
-                        {
-                            reader.EnterContainer();
-
-                            while (reader.ReadNext())
-                            {
-                                Console.WriteLine(reader.GetName(true));
-
-                                if (reader.ElementId == MatroskaDtd.Tracks.TrackEntry.Audio.Identifier)
-                                {
-                                    reader.EnterContainer();
-
-                                    while (reader.ReadNext())
-                                    {
-                                        Console.WriteLine(reader.GetName(true));
-                                    }
-
-                                    reader.LeaveContainer();
-                                }
-                            }
-
-                            reader.LeaveContainer();
-                        }
-
+                        ms1.Write(b.Data);
                     }
-                    reader.LeaveContainer();
                 }
+                
+                // Console.WriteLine(JsonSerializer.Serialize(segment, new JsonSerializerOptions { WriteIndented = true }));
+
+                //reader.EnterContainer();
+
+                //if (reader.LocateElement(MatroskaDtd.Segment.Info))
+                //{
+                //    var i2 = new Info();
+                //    i2.Parse(reader);
+                //    Console.WriteLine(JsonSerializer.Serialize(i2, new JsonSerializerOptions { WriteIndented = true }));
+                //}
+
+               
 
                 uint oggPacket = 0;
                 while (reader.ReadNext())
@@ -582,7 +496,7 @@ namespace MatroskaConsole
                 }
             }
 
-            File.WriteAllBytes(@"C:\Users\azurestef\Downloads\Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).opus", ms1.ToArray());
+            File.WriteAllBytes(@"C:\Users\Heyenrath SWW\Downloads\Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).opus", ms1.ToArray());
             return;
 
             // var e = EbmlElement.ReadElements(file).ToList();
@@ -591,13 +505,13 @@ namespace MatroskaConsole
             //p.Parse(file);
 
             var ms = new MemoryStream();
-
-            var file = new FileStream(@"C:\Users\azurestef\Downloads\Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).webm", FileMode.Open, FileAccess.Read);
+            /*
+            var file = new FileStream(@"C:\Users\Heyenrath SWW\Downloads\Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).webm", FileMode.Open, FileAccess.Read);
             foreach (var top in EbmlElement.ReadElements(file))
             {
                 Console.WriteLine(top.GetName());
 
-                if (top.ID == MatroskaSpecification.Segment.ID)
+                if (top.ID == MatroskaSpecificationEbml.Segment.ID)
                 {
 
 
@@ -607,7 +521,7 @@ namespace MatroskaConsole
                     {
                         Console.WriteLine(element.GetName());
 
-                        if (element.ID == MatroskaSpecification.SeekHead.ID)
+                        if (element.ID == MatroskaSpecificationEbml.SeekHead.ID)
                         {
                             foreach (EbmlElement seekHeadElement in EbmlElement.ReadElements(element))
                             {
@@ -615,7 +529,7 @@ namespace MatroskaConsole
                             }
                         }
 
-                        if (element.ID == MatroskaSpecification.Info.ID)
+                        if (element.ID == MatroskaSpecificationEbml.Info.ID)
                         {
                             var info = new Info();
 
@@ -624,45 +538,45 @@ namespace MatroskaConsole
                             Console.WriteLine(JsonSerializer.Serialize(info, new JsonSerializerOptions { WriteIndented = true }));
                         }
 
-                        if (element.ID == MatroskaSpecification.Tracks.ID)
+                        if (element.ID == MatroskaSpecificationEbml.Tracks.ID)
                         {
                             var trackEntry = EbmlElement.ReadElement(element);
                             foreach (EbmlElement trackEntryElement in EbmlElement.ReadElements(trackEntry))
                             {
                                 Console.WriteLine(trackEntryElement.GetName());
 
-                                if (trackEntryElement.ID == MatroskaSpecification.TrackNumber.ID)
+                                if (trackEntryElement.ID == MatroskaSpecificationEbml.TrackNumber.ID)
                                 {
                                     Console.WriteLine("TrackNumber: " + trackEntryElement.ReadUnsignedInteger());
                                 }
 
-                                if (trackEntryElement.ID == MatroskaSpecification.CodecID.ID)
+                                if (trackEntryElement.ID == MatroskaSpecificationEbml.CodecID.ID)
                                 {
                                     Console.WriteLine("CodecID: " + trackEntryElement.ReadString());
                                 }
 
-                                if (trackEntryElement.ID == MatroskaSpecification.CodecName.ID)
+                                if (trackEntryElement.ID == MatroskaSpecificationEbml.CodecName.ID)
                                 {
                                     Console.WriteLine("CodecName: " + trackEntryElement.ReadUTF8());
                                 }
 
-                                if (trackEntryElement.ID == MatroskaSpecification.Audio.ID)
+                                if (trackEntryElement.ID == MatroskaSpecificationEbml.Audio.ID)
                                 {
                                     //var audio = EbmlElement.ReadElement(trackEntryElement);
                                     foreach (EbmlElement audioElement in EbmlElement.ReadElements(trackEntryElement))
                                     {
                                         Console.WriteLine("audioElement: " + audioElement.GetName());
-                                        if (audioElement.ID == MatroskaSpecification.SamplingFrequency.ID)
+                                        if (audioElement.ID == MatroskaSpecificationEbml.SamplingFrequency.ID)
                                         {
                                             Console.WriteLine("SamplingFrequency : " + audioElement.ReadFloat());
                                         }
 
-                                        if (audioElement.ID == MatroskaSpecification.BitDepth.ID)
+                                        if (audioElement.ID == MatroskaSpecificationEbml.BitDepth.ID)
                                         {
                                             Console.WriteLine("BitDepth : " + audioElement.ReadUnsignedInteger());
                                         }
 
-                                        if (audioElement.ID == MatroskaSpecification.Channels.ID)
+                                        if (audioElement.ID == MatroskaSpecificationEbml.Channels.ID)
                                         {
                                             Console.WriteLine("Channels : " + audioElement.ReadUnsignedInteger());
                                         }
@@ -671,18 +585,18 @@ namespace MatroskaConsole
                             }
                         }
 
-                        if (element.ID == MatroskaSpecification.Cluster.ID)
+                        if (element.ID == MatroskaSpecificationEbml.Cluster.ID)
                         {
                             foreach (EbmlElement clusterElement in EbmlElement.ReadElements(element))
                             {
                                 // Console.WriteLine(clusterElement);
 
-                                if (clusterElement.ID == MatroskaSpecification.Timecode.ID)
+                                if (clusterElement.ID == MatroskaSpecificationEbml.Timecode.ID)
                                 {
                                     Console.WriteLine("Timecode: " + clusterElement.ReadUnsignedInteger());
                                 }
 
-                                if (clusterElement.ID == MatroskaSpecification.SimpleBlock.ID)
+                                if (clusterElement.ID == MatroskaSpecificationEbml.SimpleBlock.ID)
                                 {
                                     int len = (int)clusterElement.Length;
                                     var buffer = ArrayPool<byte>.Shared.Rent(len);
@@ -716,7 +630,7 @@ namespace MatroskaConsole
             //var theTrack1 = new Track(ms, "audio/ogg");
 
 
-            //var theTrack = new Track(@"C:\Users\azurestef\Downloads\Estas Tonne - Internal Flight Experience (Live in Cluj Napoca)_track1_[eng]_DELAY 0ms.opus");
+            //var theTrack = new Track(@"C:\Users\Heyenrath SWW\Downloads\Estas Tonne - Internal Flight Experience (Live in Cluj Napoca)_track1_[eng]_DELAY 0ms.opus");
             //theTrack.AdditionalFields = new Dictionary<string, string>();
 
             //theTrack.Save();
@@ -724,7 +638,7 @@ namespace MatroskaConsole
 
             var msHeader = new MemoryStream();
 
-            //using (FileStream fileOut = new FileStream(@"C:\Users\azurestef\Downloads\Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).opus", FileMode.Create))
+            //using (FileStream fileOut = new FileStream(@"C:\Users\Heyenrath SWW\Downloads\Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).opus", FileMode.Create))
             //{
             //    OpusEncoder encoder = OpusEncoder.Create(48000, 2, OpusApplication.OPUS_APPLICATION_AUDIO);
 
@@ -766,8 +680,8 @@ namespace MatroskaConsole
 
             soundOut.Initialize(waveSource);
             soundOut.Play();
-
-            // File.WriteAllBytes(@"C:\Users\azurestef\Downloads\Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).opus", ms.ToArray());
+            */
+            // File.WriteAllBytes(@"C:\Users\Heyenrath SWW\Downloads\Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).opus", ms.ToArray());
         }
 
         /// <summary>

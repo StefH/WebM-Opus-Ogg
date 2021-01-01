@@ -32,7 +32,7 @@ namespace Matroska
         /// </summary>
         public uint ID { get; }
 
-        // public string Name => MatroskaSpecification.Elements[ID].Name;
+        // public string Name => MatroskaSpecificationEbml.Elements[ID].Name;
 
         /// <summary>
         /// Gets the length of the element. Can be -1 (<see cref="UnknownLength"/>) in case the length is unknown.
