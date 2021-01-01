@@ -28,7 +28,7 @@ namespace Matroska.Spec
             },
             { MatroskaSpecification.CodecNameDescriptor, (_, r) => { _.CodecName = r.ReadUtf(); } },
 
-            { MatroskaSpecification.AudioDescriptor, (_, r) => { _.Audio = Audio.Read(r); } }
+            { MatroskaSpecification.AudioDescriptor, (_, r) => { _.Audio = Audio.ParseProperties(r); } }
         };
 
         public ulong TrackNumber { get; private set; }
@@ -47,21 +47,7 @@ namespace Matroska.Spec
 
         public string CodecName { get; private set; }
 
-        /*
-       
-
-|        |            | Language     |
-|        |            |--------------|
-|        |            | CodecID      |
-|        |            |--------------|
-|        |            | CodecPrivate |
-|        |            |--------------|
-|        |            | CodecName   */
-
-
-        public Audio Audio { get; private set; }
-
-        
+        public Audio Audio { get; private set; }      
 
         public static TrackEntry Read(NEbml.Core.EbmlReader reader)
         {

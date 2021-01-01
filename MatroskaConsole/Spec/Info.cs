@@ -6,6 +6,12 @@ namespace Matroska.Spec
 {
     public sealed class Info : AbstractBase<Info>
     {
+        [ElementDescriptor(MatroskaSpecification.SegmentUID)]
+        public byte[] SegmentUID { get; private set; }
+
+        [ElementDescriptor(MatroskaSpecification.SegmentFilename)]
+        public string SegmentFilename { get; private set; }
+
         [ElementDescriptor(MatroskaSpecification.TimestampScale)]
         public ulong TimestampScale { get; private set; }
 

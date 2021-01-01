@@ -7,9 +7,12 @@ namespace Matroska.Attributes
     {
         public ulong Identifier { get; }
 
-        public ElementDescriptorAttribute(ulong identifier)
+        public Type ElementType { get; }
+
+        public ElementDescriptorAttribute(ulong identifier, Type type = null)
         {
             Identifier = identifier;
+            ElementType = type;
         }
     }
 }

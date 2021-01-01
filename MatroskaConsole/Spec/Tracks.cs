@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Matroska.Attributes;
 using NEbml.Core;
 
 namespace Matroska.Spec
@@ -11,6 +12,7 @@ namespace Matroska.Spec
             { MatroskaSpecification.TrackEntryDescriptor, (_, r) => { _.TrackEntry = TrackEntry.Read(r); } }
         };
 
+        [ElementDescriptor(MatroskaSpecification.TrackEntry)]
         public TrackEntry TrackEntry { get; private set; }
 
         public static Tracks Read(NEbml.Core.EbmlReader reader)

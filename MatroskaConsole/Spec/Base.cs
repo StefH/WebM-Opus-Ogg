@@ -37,7 +37,7 @@ namespace Matroska.Spec
             return instance;
         }
 
-        public static T Read(NEbml.Core.EbmlReader reader)
+        public static T ParseProperties(NEbml.Core.EbmlReader reader)
         {
             var pa = cache.AddOrGetExisting(typeof(T).FullName, () =>
             {

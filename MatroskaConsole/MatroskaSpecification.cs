@@ -28,10 +28,10 @@ namespace Matroska
         static MatroskaSpecification()
         {
             var fields = typeof(MatroskaSpecification).GetFields(BindingFlags.Public | BindingFlags.Static);
-            
+
             foreach (FieldInfo field in fields.Where(ft => ft.FieldType == typeof(ElementDescriptor)))
             {
-                var value = (ElementDescriptor) field.GetValue(null);
+                var value = (ElementDescriptor)field.GetValue(null);
                 _elementDescriptorsByVInt.Add(value.Identifier, value);
             }
 
