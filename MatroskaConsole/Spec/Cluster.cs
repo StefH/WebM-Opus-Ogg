@@ -11,8 +11,8 @@ namespace Matroska.Spec
     {
         private static readonly IDictionary<ElementDescriptor, Action<Cluster, NEbml.Core.EbmlReader>> Mapping = new Dictionary<ElementDescriptor, Action<Cluster, NEbml.Core.EbmlReader>>
         {
-            { MatroskaSpecification.Timecode, (_, r) => { _.Timecode = r.ReadUInt(); } },
-            { MatroskaSpecification.SimpleBlock , (_, r) =>
+            { MatroskaSpecification.TimecodeDescriptor, (_, r) => { _.Timecode = r.ReadUInt(); } },
+            { MatroskaSpecification.SimpleBlockDescriptor , (_, r) =>
                 {
                     if (_.SimpleBlocks == null)
                     {

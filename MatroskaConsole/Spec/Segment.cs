@@ -8,9 +8,9 @@ namespace Matroska.Spec
     {
         private static readonly IDictionary<ElementDescriptor, Action<Segment, NEbml.Core.EbmlReader>> Mapping = new Dictionary<ElementDescriptor, Action<Segment, NEbml.Core.EbmlReader>>
         {
-            { MatroskaSpecification.Info, (_, r) => { _.Info = Info.Read(r); } },
-            { MatroskaSpecification.Tracks, (_, r) => { _.Tracks = Tracks.Read(r); } },
-            { MatroskaSpecification.Cluster, (_, r) =>
+            { MatroskaSpecification.InfoDescriptor, (_, r) => { _.Info = Info.Read(r); } },
+            { MatroskaSpecification.TracksDescriptor, (_, r) => { _.Tracks = Tracks.Read(r); } },
+            { MatroskaSpecification.ClusterDescriptor, (_, r) =>
                 {
                     if (_.Clusters == null)
                     {

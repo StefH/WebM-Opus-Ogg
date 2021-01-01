@@ -352,6 +352,9 @@ namespace Matroska
             {
                 var segment = Segment.Read(reader);
 
+                Console.WriteLine(JsonSerializer.Serialize(segment.Info, new JsonSerializerOptions { WriteIndented = true }));
+                Console.WriteLine(JsonSerializer.Serialize(segment.Tracks, new JsonSerializerOptions { WriteIndented = true }));
+
                 var ms1 = new MemoryStream();
                 var oggHeader = new BinaryWriter(ms1);
 

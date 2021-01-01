@@ -8,7 +8,7 @@ namespace Matroska.Spec
     {
         private static readonly IDictionary<ElementDescriptor, Action<Tracks, NEbml.Core.EbmlReader>> Mapping = new Dictionary<ElementDescriptor, Action<Tracks, NEbml.Core.EbmlReader>>
         {
-            { MatroskaSpecification.TrackEntry, (_, r) => { _.TrackEntry = TrackEntry.Read(r); } }
+            { MatroskaSpecification.TrackEntryDescriptor, (_, r) => { _.TrackEntry = TrackEntry.Read(r); } }
         };
 
         public TrackEntry TrackEntry { get; private set; }

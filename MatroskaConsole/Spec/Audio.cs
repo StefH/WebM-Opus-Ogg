@@ -8,9 +8,9 @@ namespace Matroska.Spec
     {
         private static readonly IDictionary<ElementDescriptor, Action<Audio, NEbml.Core.EbmlReader>> Mapping = new Dictionary<ElementDescriptor, Action<Audio, NEbml.Core.EbmlReader>>
         {
-            { MatroskaSpecification.SamplingFrequency , (_, r) => { _.SamplingFrequency = r.ReadFloat(); } },
-            { MatroskaSpecification.Channels, (_, r) => { _.Channels = r.ReadUInt(); } },
-            { MatroskaSpecification.BitDepth, (_, r) => { _.BitDepth = r.ReadUInt(); } }
+            { MatroskaSpecification.SamplingFrequencyDescriptor , (_, r) => { _.SamplingFrequency = r.ReadFloat(); } },
+            { MatroskaSpecification.ChannelsDescriptor, (_, r) => { _.Channels = r.ReadUInt(); } },
+            { MatroskaSpecification.BitDepthDescriptor, (_, r) => { _.BitDepth = r.ReadUInt(); } }
         };
 
         public double SamplingFrequency { get; private set; }
