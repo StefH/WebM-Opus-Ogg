@@ -6,8 +6,8 @@ namespace Matroska.Spec
 {
     public sealed class Info : AbstractBase<Info>
     {
-        [ElementDescriptor(MatroskaSpecification.TimecodeScale)]
-        public ulong TimecodeScale { get; private set; }
+        [ElementDescriptor(MatroskaSpecification.TimestampScale)]
+        public ulong TimestampScale { get; private set; }
 
         [ElementDescriptor(MatroskaSpecification.Duration)]
         public double Duration { get; private set; }
