@@ -11,12 +11,11 @@ namespace Matroska.Models
     {
         private static readonly IDictionary<ElementDescriptor, Action<Cluster, EbmlReader>> Mapping = new Dictionary<ElementDescriptor, Action<Cluster, EbmlReader>>
         {
-            { MatroskaSpecification.TimecodeDescriptor, (_, r) => { _.Timecode = r.ReadUInt(); } },
             { MatroskaSpecification.SimpleBlockDescriptor , (_, r) =>
                 {
                     if (_.SimpleBlocks == null)
                     {
-                        _.SimpleBlocks = new List<Block>();
+                        _.SimpleBlocks = new List<SimpleBlock>();
                     }
 
                     int len = (int)r.ElementSize;
@@ -30,9 +29,9 @@ namespace Matroska.Models
                     ms.Write(bytes, 0, bytes.Length);
 
                     ms.Position = 0;
-                    var s = Block.Parse(ms);
+                   // var s = Block.Parse(bytes);
 
-                    _.SimpleBlocks.Add(s);
+                //    _.Blocks.Add(s);
 
                     //if (_.SimpleBlocks.Sum(c => c.Data.Length) >= 4210)
                     //{
@@ -60,7 +59,8 @@ namespace Matroska.Models
         [MatroskaElementDescriptor(MatroskaSpecification.Timecode)]
         public ulong Timecode { get; set; }
 
-        public List<Block>? SimpleBlocks { get; set; }
+        [MatroskaElementDescriptor(MatroskaSpecification.SimpleBlock)]
+        public List<SimpleBlock>? SimpleBlocks { get; set; }
 
         //public static Cluster Read(NEbml.Core.EbmlReader reader)
         //{
@@ -77,12 +77,3 @@ namespace Matroska.Models
         //}
     }
 }
-
-/*
-
-
-
- * PrintValue("track number", simple_block.track_number);
-    PrintValue("frames", simple_block.num_frames);
-    PrintValue("timecode", simple_block.timecode);
-    PrintValue("lacing", simple_block.lacing);*/

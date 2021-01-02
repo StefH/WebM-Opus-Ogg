@@ -208,7 +208,7 @@ namespace NEbml.Core
             return new VInt(encodedValue, extraBytes + 1);
         }
 
-        public static VInt Read(Span<byte> span, int maxLength)
+        public static VInt Read(Span<byte> span)
         {
             //buffer = buffer ?? new byte[maxLength];
 
@@ -228,15 +228,22 @@ namespace NEbml.Core
 
             var extraBytes = (span[0] & 0xf0) != 0 ? ExtraBytesSize[span[0] >> 4] : 4 + ExtraBytesSize[span[0]];
 
-            if (extraBytes + 1 > maxLength)
-            {
-                throw new EbmlDataFormatException($"Expected VInt with a max length of {maxLength}. Got {extraBytes + 1}");
-            }
+            //if (extraBytes + 1 > maxLength)
+            //{
+            //    throw new EbmlDataFormatException($"Expected VInt with a max length of {maxLength}. Got {extraBytes + 1}");
+            //}
 
             //if (source.ReadFully(buffer, 1, extraBytes) != extraBytes)
             //{
             //    throw new EndOfStreamException();
             //}
+
+            for (int i = 1; i < 1 + extraBytes; i++)
+            {
+
+            }
+
+         
 
             ulong encodedValue = span[0];
             for (var i = 0; i < extraBytes; i++)

@@ -87,7 +87,7 @@ namespace Matroska
 
     }
 
-    
+
 
     public static class DictionaryEx
     {
@@ -259,7 +259,7 @@ namespace Matroska
         {
             string downloads = @"C:\Users\StefHeyenrath\Downloads\";
 
-            
+
 
             //var infoOgg = VorbisInfo.InitVariableBitRate(2, 48000, 0.5f);
             //var oggStream = new OggStream(0);
@@ -277,7 +277,7 @@ namespace Matroska
             //oggStream.PageOut(out page, true);
             //{
             //    h = page.Header;
-                
+
             //    ms1.Write(h, 0, h.Length - 4);
 
             //    //ms1.Write(page.Header, 0, page.Header.Length);
@@ -316,12 +316,7 @@ namespace Matroska
             var source = new BinaryReader(org);
             oggHeader1.ReadFromStream(source);
 
-           // var memH = new MemoryStream();
-            
-
-            
-
-
+            // var memH = new MemoryStream();
 
             //var ID = Utils.Latin1Encoding.GetString(source.ReadBytes(8));
             ////var isValidHeader = OPUS_HEADER_ID.Equals(info.OpusParameters.ID);
@@ -344,7 +339,33 @@ namespace Matroska
 
             var doc = MatroskaSerializer.Deserialize(dataStream);
 
-            Console.WriteLine(JsonSerializer.Serialize(doc, new JsonSerializerOptions { WriteIndented = true }));
+            Console.WriteLine(JsonSerializer.Serialize(doc.Segment.Clusters.First(), new JsonSerializerOptions { WriteIndented = true }));
+
+            var ms1 = new MemoryStream();
+
+            foreach (var cluster in doc.Segment.Clusters)
+            {
+                if (ms1.Position > 4210)
+                {
+                  //  continue;
+                }
+
+                // ms1.Write(System.Text.Encoding.ASCII.GetBytes("X"));
+                foreach (var b in cluster.SimpleBlocks)
+                {
+                    if (ms1.Position > 4210)
+                    {
+                       // continue;
+                    }
+
+                    ms1.Write(b.Data);
+                }
+            }
+
+            File.WriteAllBytes(downloads + "Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).opus", ms1.ToArray());
+
+
+            //
             return;
 
 
@@ -352,7 +373,7 @@ namespace Matroska
 
             reader.ReadNext();
 
-            
+
 
             if (reader.LocateElement(MatroskaSpecification.SegmentDescriptor))
             {
@@ -382,14 +403,14 @@ namespace Matroska
                 //Console.WriteLine(JsonSerializer.Serialize(segment.Info, new JsonSerializerOptions { WriteIndented = true }));
                 //Console.WriteLine(JsonSerializer.Serialize(segment.Tracks, new JsonSerializerOptions { WriteIndented = true }));
 
-                var ms1 = new MemoryStream();
+                // var ms1 = new MemoryStream();
                 var oggHeader = new BinaryWriter(ms1);
 
                 // OggS
                 oggHeader1.WriteToStream(oggHeader);
 
                 // opus
-              //  ms1.Write(segment.Tracks.TrackEntry.CodecPrivate);
+                //  ms1.Write(segment.Tracks.TrackEntry.CodecPrivate);
 
                 // OggS again?
                 oggHeader1.WriteToStream(oggHeader);
@@ -411,7 +432,7 @@ namespace Matroska
 
                 //        ms1.Write(b.Data);
 
-                        
+
                 //    }
                 //}
 
@@ -438,9 +459,9 @@ namespace Matroska
                     {
                         reader.EnterContainer();
 
-                        
 
-                        
+
+
 
                         while (reader.ReadNext())
                         {
@@ -455,7 +476,7 @@ namespace Matroska
 
                                 //ms1.Write(buffer, 0, read);
 
-                                
+
 
                                 //var memH = new MemoryStream();
                                 //var oggHeader = new BinaryWriter(memH);
@@ -492,7 +513,7 @@ namespace Matroska
                                 mem.ReadByte();
                                 mem.ReadByte();
 
-                                
+
                                 //var readerBin = new NEbml.Core.EbmlReader(mem);
                                 //readerBin.ReadInt();
 
@@ -510,7 +531,7 @@ namespace Matroska
 
                                 mem.CopyTo(ms1);
 
-                                
+
 
                                 //ms1.Write(mem, 4, read-4);
 
@@ -557,7 +578,7 @@ namespace Matroska
                 }
             }
 
-           // File.WriteAllBytes(downloads + "Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).opus", ms1.ToArray());
+            // File.WriteAllBytes(downloads + "Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).opus", ms1.ToArray());
             return;
 
             // var e = EbmlElement.ReadElements(file).ToList();

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -48,13 +47,25 @@ namespace Matroska
                 reader.EnterContainer();
             }
 
+            if (type.ToString().Contains("Block"))
+            {
+                int y = 0;
+            }
+
             var instance = Activator.CreateInstance(type);
 
-            while (reader.ReadNext())
+            if (instance is IParseRawBinary)
             {
-                if (TryGetInfoByIdentifier(type, reader.ElementId.EncodedValue, out var info))
+
+            }
+            //else
+            {
+                while (reader.ReadNext())
                 {
-                    SetPropertyValue(instance, info, reader);
+                    if (TryGetInfoByIdentifier(type, reader.ElementId.EncodedValue, out var info))
+                    {
+                        SetPropertyValue(instance, info, reader);
+                    }
                 }
             }
 
@@ -66,63 +77,142 @@ namespace Matroska
             return instance;
         }
 
-        private static void SetPropertyValue(object instance, MatroskaElementInfo info, EbmlReader reader)
+        private static object GetValue(MatroskaElementInfo info, EbmlReader reader)
         {
-            object? value = null;
             switch (info.ElementDescriptor.Type)
             {
                 case ElementType.AsciiString:
-                    value = reader.ReadAscii();
-                    break;
+                    return reader.ReadAscii();
 
                 case ElementType.Binary:
                     int len = (int)reader.ElementSize;
-                    var buffer = ArrayPool<byte>.Shared.Rent(len);
+                    var buffer = new byte[len];
                     reader.ReadBinary(buffer, 0, len);
-                    value = buffer.AsSpan().Slice(0, len).ToArray();
-                    break;
+                    return buffer;
 
                 case ElementType.Date:
-                    value = reader.ReadDate();
-                    break;
+                    return reader.ReadDate();
 
                 case ElementType.Float:
-                    value = reader.ReadFloat();
-                    break;
+                    return reader.ReadFloat();
 
                 case ElementType.MasterElement:
-                    value = Deserialize(info.ElementType, reader);
-                    break;
+                    return Deserialize(info.ElementType, reader);
 
                 case ElementType.SignedInteger:
-                    value = reader.ReadInt();
-                    break;
+                    return reader.ReadInt();
 
                 case ElementType.UnsignedInteger:
-                    value = reader.ReadUInt();
-                    break;
+                    return reader.ReadUInt();
 
                 case ElementType.Utf8String:
-                    value = reader.ReadUtf();
-                    break;
+                    return reader.ReadUtf();
             }
+
+            return false;
+        }
+
+        private static void SetPropertyValue(object instance, MatroskaElementInfo info, EbmlReader reader)
+        {
+            var value = GetValue(info, reader);
 
             if (value != null)
             {
-                if (typeof(IList).IsAssignableFrom(info.ElementType))
+                if (typeof(IList).IsAssignableFrom(info.PropertyInfo.PropertyType))
                 {
-                    var genericTypeElement = info.ElementType.GenericTypeArguments.FirstOrDefault();
+                    var genericTypeElement = info.PropertyInfo.PropertyType.GenericTypeArguments.FirstOrDefault();
                     if (genericTypeElement?.GetTypeInfo().IsClass == true)
                     {
+                        if (typeof(IParseRawBinary).IsAssignableFrom(genericTypeElement))
+                        {
+                            
+
+                            // value = p;
+
+                            var existingList = info.PropertyInfo.GetValue(instance) as IList;
+
+                            if (existingList == null)
+                            {
+                                existingList = CreateList(genericTypeElement);
+                            }
+
+                            // var list = (info.PropertyInfo.GetValue(instance) as IList) ?? CreateList(genericTypeElement);
+
+                         //   existingList.Add(p);
+
+                           // info.PropertyInfo.SetValue(instance, existingList);
+
+                            value = existingList;
+                        }
+
                         while (reader.ReadNext())
                         {
-                            ((IList)value).Add(Deserialize(genericTypeElement, reader));
+                            if (typeof(IParseRawBinary).IsAssignableFrom(genericTypeElement))
+                            {
+                                //    var p = (IParseRawBinary)Activator.CreateInstance(genericTypeElement);
+
+                                //    p.Parse((byte[])value);
+
+                                //    var list = (info.PropertyInfo.GetValue(instance) as IList) ?? CreateList(genericTypeElement);
+
+                                //    list.Add(p);
+
+                                //    value = list;
+
+                                
+
+                                var p = (IParseRawBinary)Activator.CreateInstance(genericTypeElement);
+
+                                var v = GetValue(info, reader);
+                                p.Parse((byte[])v);
+
+                                //SetPropertyValue(instance, info, reader);
+                                ((IList)value).Add(p);
+                            }
+                            else
+                            {
+                                ((IList)value).Add(Deserialize(genericTypeElement, reader));
+                            }
+
+                            //switch (value)
+                            //{
+                            //    case IParseRawBinary parseRawBinary:
+                            //        //parseRawBinary.Parse((byte[])value);
+
+                            //        //value = parseRawBinary;
+
+                            //        var list = (info.PropertyInfo.GetValue(instance) as IList) ?? CreateList(genericTypeElement);
+                            //        list.Add(parseRawBinary);
+
+                            //        value = list;
+                            //        break;
+
+                            //    default:
+                            //        ((IList)value).Add(Deserialize(genericTypeElement, reader));
+                            //        break;
+                            //}
+
+                            //if (listValue is IParseRawBinary)
+                            //{
+                            //    ((IParseRawBinary)listValue).Parse(null);
+                            //}
+                            //else
+                            //{
+                            //    ((IList)value).Add(listValue);
+                            //}
+
                         }
                     }
                 }
 
                 info.PropertyInfo.SetValue(instance, value);
             }
+        }
+
+        public static IList CreateList(Type myType)
+        {
+            Type genericListType = typeof(List<>).MakeGenericType(myType);
+            return (IList)Activator.CreateInstance(genericListType);
         }
 
         private static bool TryGetInfoByIdentifier(Type type, ulong identifier, out MatroskaElementInfo info)
@@ -147,7 +237,7 @@ namespace Matroska
                     {
                         PropertyInfo = property,
                         Identifier = attribute.Identifier,
-                        ElementType = property.PropertyType, // attribute.ElementType ?? property.PropertyType,
+                        ElementType = attribute.ElementType ?? property.PropertyType,
                         ElementDescriptor = MatroskaSpecification.ElementDescriptorsByIdentifier[attribute.Identifier]
                     };
 
