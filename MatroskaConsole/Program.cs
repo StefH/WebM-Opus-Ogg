@@ -335,6 +335,11 @@ namespace Matroska
 
             //var dataStream = new FileStream(@"C:\Users\azurestef\Downloads\test1.mkv", FileMode.Open, FileAccess.Read);
 
+            var bunny = new FileStream(downloads + "big-buck-bunny_trailer.webm", FileMode.Open, FileAccess.Read);
+            var docBunny = MatroskaSerializer.Deserialize(bunny);
+            Console.WriteLine(JsonSerializer.Serialize(docBunny.Segment.Info, new JsonSerializerOptions { WriteIndented = true }));
+            Console.WriteLine(JsonSerializer.Serialize(docBunny.Segment.Tracks, new JsonSerializerOptions { WriteIndented = true }));
+
             var dataStream = new FileStream(downloads + "Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).webm", FileMode.Open, FileAccess.Read);
 
             var doc = MatroskaSerializer.Deserialize(dataStream);

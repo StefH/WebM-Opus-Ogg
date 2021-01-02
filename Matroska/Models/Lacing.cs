@@ -5,11 +5,11 @@ namespace Matroska.Models
     [Flags]
     public enum Lacing : byte
     {
-        No = 0x0,
-        Xiph = 0x2,
-        EBML = 0x6,
-        FixedSize = 0x4,
+        No =        0b0000000,
+        Xiph =      0b0000010,
+        EBML =      0b0000110,
+        FixedSize = 0b0000100,
 
-        Any = 0x6
+        Any =       0b0000110
     }
 }
