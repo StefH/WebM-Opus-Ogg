@@ -54,6 +54,11 @@ namespace Matroska
 
             var instance = Activator.CreateInstance(type);
 
+            if (instance is IList)
+            {
+                int ili = 0;
+            }
+
             if (instance is IParseRawBinary)
             {
 
@@ -88,6 +93,17 @@ namespace Matroska
                     int len = (int)reader.ElementSize;
                     var buffer = new byte[len];
                     reader.ReadBinary(buffer, 0, len);
+
+                    if (typeof(IParseRawBinary).IsAssignableFrom(info.ElementType))
+                    {
+                        var p = (IParseRawBinary)Activator.CreateInstance(info.ElementType);
+
+                        p.Parse(buffer);
+
+                        return p;
+                    }
+
+
                     return buffer;
 
                 case ElementType.Date:
@@ -109,7 +125,7 @@ namespace Matroska
                     return reader.ReadUtf();
             }
 
-            return false;
+            throw new NotSupportedException();
         }
 
         private static void SetPropertyValue(object instance, MatroskaElementInfo info, EbmlReader reader)
@@ -123,56 +139,58 @@ namespace Matroska
                     var genericTypeElement = info.PropertyInfo.PropertyType.GenericTypeArguments.FirstOrDefault();
                     if (genericTypeElement?.GetTypeInfo().IsClass == true)
                     {
-                        if (typeof(IParseRawBinary).IsAssignableFrom(genericTypeElement))
+                        var existingList = info.PropertyInfo.GetValue(instance) as IList;
+
+                        if (existingList == null)
                         {
-                            
-
-                            // value = p;
-
-                            var existingList = info.PropertyInfo.GetValue(instance) as IList;
-
-                            if (existingList == null)
-                            {
-                                existingList = CreateList(genericTypeElement);
-                            }
-
-                            // var list = (info.PropertyInfo.GetValue(instance) as IList) ?? CreateList(genericTypeElement);
-
-                         //   existingList.Add(p);
-
-                           // info.PropertyInfo.SetValue(instance, existingList);
-
-                            value = existingList;
+                            existingList = CreateList(genericTypeElement);
                         }
 
-                        while (reader.ReadNext())
+                        existingList.Add(value);
+
+                        //value = existingList;
+
+                        if (typeof(IParseRawBinary).IsAssignableFrom(genericTypeElement))
                         {
-                            if (typeof(IParseRawBinary).IsAssignableFrom(genericTypeElement))
-                            {
-                                //    var p = (IParseRawBinary)Activator.CreateInstance(genericTypeElement);
+                           // var list = (info.PropertyInfo.GetValue(instance) as IList) ?? CreateList(genericTypeElement);
 
-                                //    p.Parse((byte[])value);
+                           //   existingList.Add(p);
 
-                                //    var list = (info.PropertyInfo.GetValue(instance) as IList) ?? CreateList(genericTypeElement);
+                           // info.PropertyInfo.SetValue(instance, existingList);
+                        }
 
-                                //    list.Add(p);
+                       // while (reader.ReadNext())
+                        {
+                           // value = Deserialize(genericTypeElement, reader);
 
-                                //    value = list;
+                            //if (typeof(IParseRawBinary).IsAssignableFrom(genericTypeElement))
+                            //{
+                            //    //    var p = (IParseRawBinary)Activator.CreateInstance(genericTypeElement);
 
-                                
+                            //    //    p.Parse((byte[])value);
 
-                                var p = (IParseRawBinary)Activator.CreateInstance(genericTypeElement);
+                            //    //    var list = (info.PropertyInfo.GetValue(instance) as IList) ?? CreateList(genericTypeElement);
 
-                                var v = GetValue(info, reader);
-                                p.Parse((byte[])v);
+                            //    //    list.Add(p);
 
-                                //SetPropertyValue(instance, info, reader);
-                                ((IList)value).Add(p);
-                            }
-                            else
-                            {
-                                ((IList)value).Add(Deserialize(genericTypeElement, reader));
-                            }
+                            //    //    value = list;
+
+
+
+                            //    var p = (IParseRawBinary)Activator.CreateInstance(genericTypeElement);
+
+                            //    var v = GetValue(info, reader);
+                            //    p.Parse((byte[])v);
+
+                            //    //SetPropertyValue(instance, info, reader);
+                            //    ((IList)value).Add(p);
+                            //}
+                            //else
+                            //{
+                            //    ((IList)value).Add(Deserialize(genericTypeElement, reader));
+                            //}
+
+                            //  ((IList)value).Add(Deserialize(genericTypeElement, reader));
 
                             //switch (value)
                             //{
@@ -202,6 +220,9 @@ namespace Matroska
                             //}
 
                         }
+
+
+                        value = existingList;
                     }
                 }
 

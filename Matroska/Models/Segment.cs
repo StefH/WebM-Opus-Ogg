@@ -11,7 +11,7 @@ namespace Matroska.Models
         [MatroskaElementDescriptor(MatroskaSpecification.Tracks)]
         public Tracks? Tracks { get; set; }
 
-        [MatroskaElementDescriptor(MatroskaSpecification.Cluster)]
+        [MatroskaElementDescriptor(MatroskaSpecification.Cluster, typeof(Cluster))]
         public List<Cluster>? Clusters { get; set; }
     }
 }

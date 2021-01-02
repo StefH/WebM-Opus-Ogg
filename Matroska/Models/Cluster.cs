@@ -59,7 +59,7 @@ namespace Matroska.Models
         [MatroskaElementDescriptor(MatroskaSpecification.Timecode)]
         public ulong Timecode { get; set; }
 
-        [MatroskaElementDescriptor(MatroskaSpecification.SimpleBlock)]
+        [MatroskaElementDescriptor(MatroskaSpecification.SimpleBlock, typeof(SimpleBlock))]
         public List<SimpleBlock>? SimpleBlocks { get; set; }
 
         //public static Cluster Read(NEbml.Core.EbmlReader reader)

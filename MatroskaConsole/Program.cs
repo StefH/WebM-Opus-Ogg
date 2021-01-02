@@ -339,7 +339,7 @@ namespace Matroska
 
             var doc = MatroskaSerializer.Deserialize(dataStream);
 
-            Console.WriteLine(JsonSerializer.Serialize(doc.Segment.Clusters.First(), new JsonSerializerOptions { WriteIndented = true }));
+            Console.WriteLine(JsonSerializer.Serialize(doc.Segment.Clusters.First().SimpleBlocks.Take(10), new JsonSerializerOptions { WriteIndented = true }));
 
             var ms1 = new MemoryStream();
 
