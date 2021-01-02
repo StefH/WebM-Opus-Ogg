@@ -2,7 +2,7 @@
 using System.Buffers;
 using System.IO;
 
-namespace Matroska.Spec
+namespace Matroska.Models
 {
     /*
      * 5-6	must	Lacing

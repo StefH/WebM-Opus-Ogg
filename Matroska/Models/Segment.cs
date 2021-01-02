@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Matroska.Attributes;
 using NEbml.Core;
 
-namespace Matroska.Spec
+namespace Matroska.Models
 {
     public sealed class Segment
     {

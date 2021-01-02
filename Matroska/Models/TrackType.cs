@@ -1,4 +1,4 @@
-﻿namespace Matroska.Spec
+﻿namespace Matroska.Models
 {
     public enum TrackType : ulong
     {

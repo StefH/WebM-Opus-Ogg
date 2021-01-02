@@ -8,7 +8,7 @@ using System.Text.Unicode;
 using System.Threading.Tasks;
 using ATL;
 using Commons;
-using Matroska.Spec;
+using Matroska.Models;
 using NEbml.Core;
 using NEbml.MkvTitleEdit.Matroska;
 using OggVorbisEncoder;

@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Runtime.Caching;
 using Matroska.Attributes;
 using Matroska.Extensions;
-using Matroska.Spec;
+using Matroska.Models;
 using NEbml.Core;
 
 namespace Matroska

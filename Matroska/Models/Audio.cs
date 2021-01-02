@@ -1,6 +1,6 @@
 ﻿using Matroska.Attributes;
 
-namespace Matroska.Spec
+namespace Matroska.Models
 {
     public sealed class Audio
     {

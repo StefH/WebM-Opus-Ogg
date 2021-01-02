@@ -5,7 +5,7 @@ using System.IO;
 using Matroska.Attributes;
 using NEbml.Core;
 
-namespace Matroska.Spec
+namespace Matroska.Models
 {
     public sealed class Cluster //: AbstractBase<Cluster>
     {
