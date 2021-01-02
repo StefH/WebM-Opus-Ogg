@@ -60,7 +60,7 @@ namespace Matroska.Spec
         /// </summary>
         public Lacing Lacing { get; private set; }
 
-        public byte[] Data { get; private set; }
+        public byte[]? Data { get; private set; }
 
         //static bool is_bit_set(byte value, int bitindex)
         //{

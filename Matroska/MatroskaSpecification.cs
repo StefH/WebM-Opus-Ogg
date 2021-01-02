@@ -14,16 +14,15 @@ namespace Matroska
     public static class MatroskaSpecification
     {
         #region Helper
-        private static readonly Dictionary<NEbml.Core.VInt, ElementDescriptor> _elementDescriptorsByVInt = new Dictionary<NEbml.Core.VInt, ElementDescriptor>();
+        private static readonly Dictionary<VInt, ElementDescriptor> _elementDescriptorsByVInt = new Dictionary<VInt, ElementDescriptor>();
         private static readonly Dictionary<ulong, ElementDescriptor> _elementDescriptorsByIdentifier = new Dictionary<ulong, ElementDescriptor>();
-
 
         /// <summary>
         /// Gets a dictionary of all Matroska elements.
         /// </summary>
-        public static IReadOnlyDictionary<NEbml.Core.VInt, ElementDescriptor> ElementDescriptors => _elementDescriptorsByVInt;
+        public static IReadOnlyDictionary<VInt, ElementDescriptor> ElementDescriptors => _elementDescriptorsByVInt;
 
-        public static IReadOnlyDictionary<ulong, ElementDescriptor> ElementIdentifiers => _elementDescriptorsByIdentifier;
+        public static IReadOnlyDictionary<ulong, ElementDescriptor> ElementDescriptorsByIdentifier => _elementDescriptorsByIdentifier;
 
         static MatroskaSpecification()
         {

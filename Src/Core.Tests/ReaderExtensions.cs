@@ -8,13 +8,12 @@ namespace NEbml.MkvTitleEdit.Matroska
 		{
 			while (reader.ReadNext())
 			{
-				var identifier = reader.ElementId;
-
-				if (identifier == descriptor.Identifier)
+				if (reader.ElementId == descriptor.Identifier)
 				{
 					return true;
 				}
 			}
+
 			return false;
 		}
 	}

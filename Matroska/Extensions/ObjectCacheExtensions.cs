@@ -10,9 +10,7 @@ namespace Matroska.Extensions
             AbsoluteExpiration = DateTimeOffset.Now.AddYears(99)
         };
 
-        public static T AddOrGetExisting<T>(this ObjectCache cache,
-                                                string key,
-                                                Func<T> valueFactory)
+        public static T AddOrGetExisting<T>(this ObjectCache cache, string key, Func<T> valueFactory)
         {
             var newValue = new Lazy<T>(valueFactory);
             var oldValue = cache.AddOrGetExisting(key, newValue, CacheItemPolicy) as Lazy<T>;

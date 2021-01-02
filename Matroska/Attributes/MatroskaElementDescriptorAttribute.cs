@@ -3,13 +3,13 @@
 namespace Matroska.Attributes
 {
     [AttributeUsage(AttributeTargets.Property)]
-    internal class ElementDescriptorAttribute : Attribute
+    public class MatroskaElementDescriptorAttribute : Attribute
     {
         public ulong Identifier { get; }
 
-        public Type ElementType { get; }
+        public Type? ElementType { get; }
 
-        public ElementDescriptorAttribute(ulong identifier, Type type = null)
+        public MatroskaElementDescriptorAttribute(ulong identifier, Type? type = null)
         {
             Identifier = identifier;
             ElementType = type;

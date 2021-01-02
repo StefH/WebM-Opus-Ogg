@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Matroska.Attributes;
 
 namespace Matroska.Spec
 {
     public class Ebml
     {
-    }
+		[MatroskaElementDescriptor(MatroskaSpecification.EBMLVersion)]
+		public ulong EBMLVersion { get; set; }
+
+		[MatroskaElementDescriptor(MatroskaSpecification.EBMLReadVersion)]
+		public ulong EBMLReadVersion { get; set; }
+
+	}
 }
 
 /*

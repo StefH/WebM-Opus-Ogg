@@ -2,14 +2,14 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using Matroska.Attributes;
 using NEbml.Core;
 
 namespace Matroska.Spec
 {
-    public sealed class Cluster : AbstractBase<Cluster>
+    public sealed class Cluster //: AbstractBase<Cluster>
     {
-        private static readonly IDictionary<ElementDescriptor, Action<Cluster, NEbml.Core.EbmlReader>> Mapping = new Dictionary<ElementDescriptor, Action<Cluster, NEbml.Core.EbmlReader>>
+        private static readonly IDictionary<ElementDescriptor, Action<Cluster, EbmlReader>> Mapping = new Dictionary<ElementDescriptor, Action<Cluster, EbmlReader>>
         {
             { MatroskaSpecification.TimecodeDescriptor, (_, r) => { _.Timecode = r.ReadUInt(); } },
             { MatroskaSpecification.SimpleBlockDescriptor , (_, r) =>
@@ -26,18 +26,18 @@ namespace Matroska.Spec
                     r.ReadBinary(buffer, 0, len);
 
                     var ms = new MemoryStream(len);
-                    var bytes = buffer.AsSpan().Slice(0, len);
-                    ms.Write(bytes);
+                    var bytes = buffer.AsSpan().Slice(0, len).ToArray();
+                    ms.Write(bytes, 0, bytes.Length);
 
                     ms.Position = 0;
                     var s = Block.Parse(ms);
 
                     _.SimpleBlocks.Add(s);
 
-                    if (_.SimpleBlocks.Sum(c => c.Data.Length) >= 4210)
-                    {
-                        int cccc = 0;
-                    }
+                    //if (_.SimpleBlocks.Sum(c => c.Data.Length) >= 4210)
+                    //{
+                    //    int cccc = 0;
+                    //}
                     /*
                      * public ulong TrackNumber { get; set; }
 
@@ -57,22 +57,24 @@ namespace Matroska.Spec
 
         //private readonly MemoryStream _simpleBlockMemoryStream = new MemoryStream();
 
+        [MatroskaElementDescriptor(MatroskaSpecification.Timecode)]
         public ulong Timecode { get; private set; }
-        public List<Block> SimpleBlocks { get; private set; }
 
-        public static Cluster Read(NEbml.Core.EbmlReader reader)
-        {
-            var cluster = Read(reader, Mapping);
+        public List<Block>? SimpleBlocks { get; private set; }
 
-            //if (cluster._simpleBlockMemoryStream.Length > 0)
-            //{
-            //    cluster._simpleBlockMemoryStream.Position = 0;
-            //    cluster.SimpleBlock = cluster._simpleBlockMemoryStream.GetBuffer();
-            //    cluster._simpleBlockMemoryStream.Dispose();
-            //}
+        //public static Cluster Read(NEbml.Core.EbmlReader reader)
+        //{
+        //    var cluster = Read(reader, Mapping);
 
-            return cluster;
-        }
+        //    //if (cluster._simpleBlockMemoryStream.Length > 0)
+        //    //{
+        //    //    cluster._simpleBlockMemoryStream.Position = 0;
+        //    //    cluster.SimpleBlock = cluster._simpleBlockMemoryStream.GetBuffer();
+        //    //    cluster._simpleBlockMemoryStream.Dispose();
+        //    //}
+
+        //    return cluster;
+        //}
     }
 }
 

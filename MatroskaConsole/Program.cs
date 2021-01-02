@@ -341,19 +341,46 @@ namespace Matroska
             //var dataStream = new FileStream(@"C:\Users\azurestef\Downloads\test1.mkv", FileMode.Open, FileAccess.Read);
 
             var dataStream = new FileStream(downloads + "Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).webm", FileMode.Open, FileAccess.Read);
-           
+
+            var doc = MatroskaSerializer.Deserialize(dataStream);
+
+            Console.WriteLine(JsonSerializer.Serialize(doc, new JsonSerializerOptions { WriteIndented = true }));
+            return;
+
+
             var reader = new NEbml.Core.EbmlReader(dataStream);
 
             reader.ReadNext();
+
+            
+
+            if (reader.LocateElement(MatroskaSpecification.SegmentDescriptor))
+            {
+                var s = MatroskaSerializer.Deserialize<Segment>(reader);
+
+                Console.WriteLine(JsonSerializer.Serialize(s, new JsonSerializerOptions { WriteIndented = true }));
+                return;
+
+                reader.EnterContainer();
+
+                if (reader.LocateElement(MatroskaSpecification.InfoDescriptor))
+                {
+                    var i = MatroskaSerializer.Deserialize<Info>(reader);
+
+                    Console.WriteLine(JsonSerializer.Serialize(i, new JsonSerializerOptions { WriteIndented = true }));
+                }
+
+            }
+
 
             var segments = new List<Segment>();
 
             if (reader.LocateElement(MatroskaDtd.Segment))
             {
-                var segment = Segment.Read(reader);
+                //var segment = Segment.Read(reader);
 
-                Console.WriteLine(JsonSerializer.Serialize(segment.Info, new JsonSerializerOptions { WriteIndented = true }));
-                Console.WriteLine(JsonSerializer.Serialize(segment.Tracks, new JsonSerializerOptions { WriteIndented = true }));
+                //Console.WriteLine(JsonSerializer.Serialize(segment.Info, new JsonSerializerOptions { WriteIndented = true }));
+                //Console.WriteLine(JsonSerializer.Serialize(segment.Tracks, new JsonSerializerOptions { WriteIndented = true }));
 
                 var ms1 = new MemoryStream();
                 var oggHeader = new BinaryWriter(ms1);
@@ -362,31 +389,31 @@ namespace Matroska
                 oggHeader1.WriteToStream(oggHeader);
 
                 // opus
-                ms1.Write(segment.Tracks.TrackEntry.CodecPrivate);
+              //  ms1.Write(segment.Tracks.TrackEntry.CodecPrivate);
 
                 // OggS again?
                 oggHeader1.WriteToStream(oggHeader);
 
-                foreach (var cluster in segment.Clusters)
-                {
-                    if (ms1.Position > 4210)
-                    {
-                        continue;
-                    }
+                //foreach (var cluster in segment.Clusters)
+                //{
+                //    if (ms1.Position > 4210)
+                //    {
+                //        continue;
+                //    }
 
-                    // ms1.Write(System.Text.Encoding.ASCII.GetBytes("X"));
-                    foreach (var b in cluster.SimpleBlocks)
-                    {
-                        if (ms1.Position > 4210)
-                        {
-                            continue;
-                        }
+                //    // ms1.Write(System.Text.Encoding.ASCII.GetBytes("X"));
+                //    foreach (var b in cluster.SimpleBlocks)
+                //    {
+                //        if (ms1.Position > 4210)
+                //        {
+                //            continue;
+                //        }
 
-                        ms1.Write(b.Data);
+                //        ms1.Write(b.Data);
 
                         
-                    }
-                }
+                //    }
+                //}
 
                 File.WriteAllBytes(downloads + "Estas Tonne - Internal Flight Experience (Live in Cluj Napoca).opus", ms1.ToArray());
                 return;
