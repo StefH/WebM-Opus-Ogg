@@ -22,12 +22,13 @@ namespace Matroska.Models
         //    }
         //};
 
-        [MatroskaElementDescriptor(MatroskaSpecification.Info, typeof(Info))]
+        [MatroskaElementDescriptor(MatroskaSpecification.Info)]
         public Info? Info { get; set; }
 
-        [MatroskaElementDescriptor(MatroskaSpecification.Tracks, typeof(Tracks))]
+        [MatroskaElementDescriptor(MatroskaSpecification.Tracks)]
         public Tracks? Tracks { get; set; }
 
+        [MatroskaElementDescriptor(MatroskaSpecification.Cluster)]
         public List<Cluster>? Clusters { get; set; }
     }
 }

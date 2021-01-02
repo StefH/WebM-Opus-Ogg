@@ -1,9 +1,25 @@
-﻿using NEbml.Core;
+﻿using System.Collections.Generic;
+using NEbml.Core;
 
 namespace Matroska.Extensions
 {
-    internal static class EExtensions
+    internal static class EbmlReaderExtensions
     {
+        public static bool IsKnownMasterElement(this EbmlReader reader)
+        {
+            return MatroskaSpecification.ElementDescriptors.TryGetValue(reader.ElementId, out var descriptor) && descriptor.Type == ElementType.MasterElement;
+        }
+
+        //public static ElementDescriptor? GetElementDescriptor(this EbmlReader reader)
+        //{
+        //    if (MatroskaSpecification.ElementDescriptors.TryGetValue(reader.ElementId, out var descriptor))
+        //    {
+        //        return descriptor;
+        //    }
+
+        //    throw new KeyNotFoundException();
+        //}
+
         public static string GetName(this EbmlReader r, bool dumpValue = false)
         {
             string name = "?";
@@ -42,7 +58,7 @@ namespace Matroska.Extensions
                             dump = "'Master'";
                             break;
                         default:
-                            dump = $"unknown (id:{r.ToString()})";
+                            dump = $"unknown (id:{r})";
                             break;
                     }
                 }

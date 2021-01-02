@@ -4,15 +4,6 @@ using System.IO;
 
 namespace Matroska.Models
 {
-    /*
-     * 5-6	must	Lacing
-    421
-    000 : no lacing = 
-    010 : Xiph lacing = 
-    110 : EBML lacing = 
-    100 : fixed-size lacing = 
-     */
-
     [Flags]
     public enum Lacing : byte
     {
@@ -20,6 +11,7 @@ namespace Matroska.Models
         Xiph = 0x2,
         EBML = 0x6,
         FixedSize = 0x4,
+
         Any = 0x6
     }
 
@@ -61,11 +53,6 @@ namespace Matroska.Models
         public Lacing Lacing { get; private set; }
 
         public byte[]? Data { get; private set; }
-
-        //static bool is_bit_set(byte value, int bitindex)
-        //{
-        //    return (value & (1 << bitindex)) != 0;
-        //}
 
         public static Block Parse(MemoryStream stream)
         {

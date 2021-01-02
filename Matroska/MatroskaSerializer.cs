@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -40,19 +41,27 @@ namespace Matroska
 
         public static object Deserialize(Type type, EbmlReader reader)
         {
-            reader.EnterContainer();
+            bool isMasterElement = reader.IsKnownMasterElement();
+
+            if (isMasterElement)
+            {
+                reader.EnterContainer();
+            }
 
             var instance = Activator.CreateInstance(type);
 
             while (reader.ReadNext())
             {
-                if (TryGet(type, reader.ElementId.EncodedValue, out var info))
+                if (TryGetInfoByIdentifier(type, reader.ElementId.EncodedValue, out var info))
                 {
                     SetPropertyValue(instance, info, reader);
                 }
             }
 
-            reader.LeaveContainer();
+            if (isMasterElement)
+            {
+                reader.LeaveContainer();
+            }
 
             return instance;
         }
@@ -100,11 +109,23 @@ namespace Matroska
 
             if (value != null)
             {
+                if (typeof(IList).IsAssignableFrom(info.ElementType))
+                {
+                    var genericTypeElement = info.ElementType.GenericTypeArguments.FirstOrDefault();
+                    if (genericTypeElement?.GetTypeInfo().IsClass == true)
+                    {
+                        while (reader.ReadNext())
+                        {
+                            ((IList)value).Add(Deserialize(genericTypeElement, reader));
+                        }
+                    }
+                }
+
                 info.PropertyInfo.SetValue(instance, value);
             }
         }
 
-        private static bool TryGet(Type type, ulong identifier, out MatroskaElementInfo info)
+        private static bool TryGetInfoByIdentifier(Type type, ulong identifier, out MatroskaElementInfo info)
         {
             return GetInfoFromCache(type).TryGetValue(identifier, out info);
         }
@@ -126,7 +147,7 @@ namespace Matroska
                     {
                         PropertyInfo = property,
                         Identifier = attribute.Identifier,
-                        ElementType = attribute.ElementType ?? property.PropertyType,
+                        ElementType = property.PropertyType, // attribute.ElementType ?? property.PropertyType,
                         ElementDescriptor = MatroskaSpecification.ElementDescriptorsByIdentifier[attribute.Identifier]
                     };
 

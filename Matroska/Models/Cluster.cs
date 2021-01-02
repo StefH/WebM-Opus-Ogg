@@ -7,7 +7,7 @@ using NEbml.Core;
 
 namespace Matroska.Models
 {
-    public sealed class Cluster //: AbstractBase<Cluster>
+    public sealed class Cluster
     {
         private static readonly IDictionary<ElementDescriptor, Action<Cluster, EbmlReader>> Mapping = new Dictionary<ElementDescriptor, Action<Cluster, EbmlReader>>
         {
@@ -58,9 +58,9 @@ namespace Matroska.Models
         //private readonly MemoryStream _simpleBlockMemoryStream = new MemoryStream();
 
         [MatroskaElementDescriptor(MatroskaSpecification.Timecode)]
-        public ulong Timecode { get; private set; }
+        public ulong Timecode { get; set; }
 
-        public List<Block>? SimpleBlocks { get; private set; }
+        public List<Block>? SimpleBlocks { get; set; }
 
         //public static Cluster Read(NEbml.Core.EbmlReader reader)
         //{
