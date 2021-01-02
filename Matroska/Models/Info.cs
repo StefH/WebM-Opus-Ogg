@@ -11,6 +11,24 @@ namespace Matroska.Models
         [MatroskaElementDescriptor(MatroskaSpecification.SegmentFilename)]
         public string? SegmentFilename { get; set; }
 
+        [MatroskaElementDescriptor(MatroskaSpecification.PrevUID)]
+        public byte[]? PrevUID { get; set; }
+
+        [MatroskaElementDescriptor(MatroskaSpecification.PrevFilename)]
+        public string? PrevFilename { get; set; }
+
+        [MatroskaElementDescriptor(MatroskaSpecification.NextUID)]
+        public byte[]? NextUID { get; set; }
+
+        [MatroskaElementDescriptor(MatroskaSpecification.NextFilename)]
+        public string? NextFilename { get; set; }
+
+        [MatroskaElementDescriptor(MatroskaSpecification.SegmentFamily)]
+        public byte[]? SegmentFamily { get; set; }
+
+        [MatroskaElementDescriptor(MatroskaSpecification.ChapterTranslate)]
+        public ChapterTranslate? ChapterTranslate { get; set; }
+
         [MatroskaElementDescriptor(MatroskaSpecification.TimestampScale)]
         public ulong TimestampScale { get; set; }
 

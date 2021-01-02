@@ -1,6 +1,6 @@
 ﻿namespace Matroska.Models
 {
-    public class MatroskaDocument
+    public sealed class MatroskaDocument
     {
         public Ebml? Ebml { get; set; }
 

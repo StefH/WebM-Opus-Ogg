@@ -2,7 +2,7 @@
 
 namespace Matroska.Models
 {
-    public class Tracks
+    public sealed class Tracks
     {
         [MatroskaElementDescriptor(MatroskaSpecification.TrackEntry)]
         public TrackEntry? TrackEntry { get; set; }

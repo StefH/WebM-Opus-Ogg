@@ -4,14 +4,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using System.Text.Unicode;
 using System.Threading.Tasks;
 using ATL;
 using Commons;
 using Matroska.Models;
 using NEbml.Core;
 using NEbml.MkvTitleEdit.Matroska;
-using OggVorbisEncoder;
 
 namespace Matroska
 {
@@ -352,7 +350,7 @@ namespace Matroska
             {
                 if (ms1.Position > 4210)
                 {
-                  //  continue;
+                    //  continue;
                 }
 
                 // ms1.Write(System.Text.Encoding.ASCII.GetBytes("X"));
@@ -360,7 +358,7 @@ namespace Matroska
                 {
                     if (ms1.Position > 4210)
                     {
-                       // continue;
+                        // continue;
                     }
 
                     ms1.Write(b.Data);

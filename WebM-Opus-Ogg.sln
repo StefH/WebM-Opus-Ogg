@@ -11,15 +11,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MkvTitleEdit", "Src\MkvTitl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatroskaConsole", "MatroskaConsole\MatroskaConsole.csproj", "{4BC00A07-A343-4718-8E8F-C1F8161A5DE0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Matroska", "Matroska\Matroska.csproj", "{98F132B9-79F3-4BD0-AFE7-409A796CD780}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatroskaEbml", "matroska-master\MatroskaEbml.csproj", "{B1F2422D-EA59-48B2-89BC-637BF09B22E9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATL", "atldotnet-master\ATL\ATL.csproj", "{6220A2B4-1044-41E4-BC64-3CFA9C7785E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATL.test", "ATL.test\ATL.test.csproj", "{374BC131-4106-4C5C-86EB-ECD4E1F237E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATL.test", "ATL.test\ATL.test.csproj", "{374BC131-4106-4C5C-86EB-ECD4E1F237E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject1", "UnitTestProject1\UnitTestProject1.csproj", "{395E6FF9-163C-48FC-8D20-AB6ABD6BC872}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestProject1", "UnitTestProject1\UnitTestProject1.csproj", "{395E6FF9-163C-48FC-8D20-AB6ABD6BC872}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Matroska", "Matroska\Matroska.csproj", "{B6269AAC-170A-4346-1234-579DED3D1234}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,18 +79,6 @@ Global
 		{4BC00A07-A343-4718-8E8F-C1F8161A5DE0}.Release|x64.Build.0 = Release|Any CPU
 		{4BC00A07-A343-4718-8E8F-C1F8161A5DE0}.Release|x86.ActiveCfg = Release|Any CPU
 		{4BC00A07-A343-4718-8E8F-C1F8161A5DE0}.Release|x86.Build.0 = Release|Any CPU
-		{98F132B9-79F3-4BD0-AFE7-409A796CD780}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{98F132B9-79F3-4BD0-AFE7-409A796CD780}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{98F132B9-79F3-4BD0-AFE7-409A796CD780}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{98F132B9-79F3-4BD0-AFE7-409A796CD780}.Debug|x64.Build.0 = Debug|Any CPU
-		{98F132B9-79F3-4BD0-AFE7-409A796CD780}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{98F132B9-79F3-4BD0-AFE7-409A796CD780}.Debug|x86.Build.0 = Debug|Any CPU
-		{98F132B9-79F3-4BD0-AFE7-409A796CD780}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{98F132B9-79F3-4BD0-AFE7-409A796CD780}.Release|Any CPU.Build.0 = Release|Any CPU
-		{98F132B9-79F3-4BD0-AFE7-409A796CD780}.Release|x64.ActiveCfg = Release|Any CPU
-		{98F132B9-79F3-4BD0-AFE7-409A796CD780}.Release|x64.Build.0 = Release|Any CPU
-		{98F132B9-79F3-4BD0-AFE7-409A796CD780}.Release|x86.ActiveCfg = Release|Any CPU
-		{98F132B9-79F3-4BD0-AFE7-409A796CD780}.Release|x86.Build.0 = Release|Any CPU
 		{B1F2422D-EA59-48B2-89BC-637BF09B22E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B1F2422D-EA59-48B2-89BC-637BF09B22E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1F2422D-EA59-48B2-89BC-637BF09B22E9}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -139,6 +127,18 @@ Global
 		{395E6FF9-163C-48FC-8D20-AB6ABD6BC872}.Release|x64.Build.0 = Release|Any CPU
 		{395E6FF9-163C-48FC-8D20-AB6ABD6BC872}.Release|x86.ActiveCfg = Release|Any CPU
 		{395E6FF9-163C-48FC-8D20-AB6ABD6BC872}.Release|x86.Build.0 = Release|Any CPU
+		{B6269AAC-170A-4346-1234-579DED3D1234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6269AAC-170A-4346-1234-579DED3D1234}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6269AAC-170A-4346-1234-579DED3D1234}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B6269AAC-170A-4346-1234-579DED3D1234}.Debug|x64.Build.0 = Debug|Any CPU
+		{B6269AAC-170A-4346-1234-579DED3D1234}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B6269AAC-170A-4346-1234-579DED3D1234}.Debug|x86.Build.0 = Debug|Any CPU
+		{B6269AAC-170A-4346-1234-579DED3D1234}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6269AAC-170A-4346-1234-579DED3D1234}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6269AAC-170A-4346-1234-579DED3D1234}.Release|x64.ActiveCfg = Release|Any CPU
+		{B6269AAC-170A-4346-1234-579DED3D1234}.Release|x64.Build.0 = Release|Any CPU
+		{B6269AAC-170A-4346-1234-579DED3D1234}.Release|x86.ActiveCfg = Release|Any CPU
+		{B6269AAC-170A-4346-1234-579DED3D1234}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

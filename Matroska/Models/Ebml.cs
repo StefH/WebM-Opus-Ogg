@@ -2,7 +2,7 @@
 
 namespace Matroska.Models
 {
-    public class Ebml
+    public sealed class Ebml
     {
 		[MatroskaElementDescriptor(MatroskaSpecification.EBMLVersion)]
 		public ulong EBMLVersion { get; set; }

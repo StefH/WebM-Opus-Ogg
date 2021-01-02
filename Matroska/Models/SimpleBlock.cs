@@ -1,12 +1,10 @@
 ﻿using System;
 using System.IO;
-using Matroska.Attributes;
 using NEbml.Core;
 
 namespace Matroska.Models
 {
-    [MatroskaElementDescriptor(MatroskaSpecification.SimpleBlock)]
-    public class SimpleBlock : IParseRawBinary
+    public sealed class SimpleBlock : IParseRawBinary
     {
         /// <summary>
         /// Track Number (Track Entry)
